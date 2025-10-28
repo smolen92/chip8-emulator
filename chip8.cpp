@@ -11,7 +11,9 @@ void chip8::initilalize() {
 	}
 	
 	std::memset(screen, 0, SCREEN_SIZE);
-	
+
+	std::memset(keypad, 0, 16);
+
 	draw_flag = false;
 
 	srand(time(0));
