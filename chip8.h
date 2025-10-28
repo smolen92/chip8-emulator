@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <SDL3/SDL.h>
 
 #define NEXT_INSTRUCTION(x) (x) += 2
 #define SKIP_INSTRUCTION(x) (x) += 4
@@ -25,6 +26,8 @@ class chip8 {
 		void emulate_cycle();
 
 		unsigned char keypad[16];
+
+		void render(SDL_Renderer* renderer);
 	private:
 		uint16_t opcode;
 		uint8_t RAM[RAM_SIZE];

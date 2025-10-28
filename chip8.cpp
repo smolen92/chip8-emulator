@@ -288,3 +288,27 @@ void chip8::emulate_cycle() {
 
 }
 
+void chip8::render(SDL_Renderer* renderer) {
+	if( !draw_flag) return;
+	
+	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
+	SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+	SDL_FRect temp;
+	
+	temp.h = 10; //WINDOW_WIDTH/SCREEN_WIDTH
+	temp.y = 10;
+
+	for(int i=0; i < SCREEN_SIZE; i++) {
+		temp.x = (float)((int)i%64);
+		temp.y = (float)((int)i/64);
+
+		SDL_RenderFillRect(renderer, &temp);
+
+	}
+
+	SDL_RenderPresent(renderer);
+	
+	draw_flag = false;
+}
