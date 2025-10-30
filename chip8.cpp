@@ -50,7 +50,7 @@ bool chip8::load_game(const char* name) {
 void chip8::emulate_cycle() {
 	
 	opcode = RAM[pc] << 8 | RAM[pc+1];
-
+	//std::cout << std::dec << pc << " " << std::showbase << std::hex << opcode << std::endl;
 	switch(opcode & 0xF000) {
 		
 		case 0x0000:
@@ -67,7 +67,7 @@ void chip8::emulate_cycle() {
 					break;
 
 				default:
-					std::cout << "Unknown opcode [0x0000]: " << opcode << "\n";
+					std::cout << "Unknown opcode [0x0000]: " << std::showbase << std::hex << opcode << "\n";
 			}
 			break;
 		
@@ -155,7 +155,7 @@ void chip8::emulate_cycle() {
 					break;
 
 				default:
-					std::cout << "Unknown opcode [0x8000]: " << opcode << "\n";
+					std::cout << "Unknown opcode [0x8000]: " << std::showbase << std::hex << opcode << "\n";
 			}
 
 			break;
@@ -218,7 +218,7 @@ void chip8::emulate_cycle() {
 					}
 					break;
 				default:
-					std::cout << "Unknown opcode [0xE000] " << opcode << "\n";
+					std::cout << "Unknown opcode [0xE000] " << std::showbase << std::hex << opcode << "\n";
 			}
 			break;
 		
@@ -271,12 +271,12 @@ void chip8::emulate_cycle() {
 					NEXT_INSTRUCTION(pc);
 					break;
 				default:
-					std::cout << "Unkwon opcode [0xF000]" << opcode << "\n";
+					std::cout << "Unkwon opcode [0xF000]: " << std::showbase << std::hex << opcode << "\n";
 				}
 			break;
 
 		default:
-			std::cout << "Unknown opcode: " << opcode << "\n";
+			std::cout << "Unknown opcode: " << std::showbase << std::hex << opcode << "\n";
 	}
 
 	if(delay_timer > 0) delay_timer--;
