@@ -32,7 +32,8 @@ bool chip8::load_game(const char* name) {
 
 	file.seekg(0,std::ios::end);
 	std::streamsize size = file.tellg();
-	
+	file.seekg(0);
+
 	if(size > RAM_SIZE-PROGRAM_LOCATION) {
 		std::cout << "File too large\n";
 		return false;
@@ -50,7 +51,7 @@ bool chip8::load_game(const char* name) {
 void chip8::emulate_cycle() {
 	
 	opcode = RAM[pc] << 8 | RAM[pc+1];
-	//std::cout << std::dec << pc << " " << std::showbase << std::hex << opcode << std::endl;
+	
 	switch(opcode & 0xF000) {
 		
 		case 0x0000:
@@ -170,7 +171,7 @@ void chip8::emulate_cycle() {
 			break;
 
 		case 0xB000:
-			pc = v[0] + opcode & 0x0FFF;
+			pc = v[0] + (opcode & 0x0FFF);
 			break;
 
 		case 0xC000:
@@ -194,7 +195,7 @@ void chip8::emulate_cycle() {
 
 
 					for(int j=0; j < sprite_width; j++) {
-						if( screen[x_pos+j + ((y_pos+i)*64) ] == 1 && (pixel_row & (0x80 >> j) == 0) ) v[0xF] = 1; 
+						if( (screen[x_pos+j + ((y_pos+i)*64) ] == 1) && ( (pixel_row & (0x80 >> j)) == 0) ) v[0xF] = 1; 
 
 						screen[x_pos+j + ((y_pos+i)*64) ] = pixel_row & (0x80 >> j); 
 					}
