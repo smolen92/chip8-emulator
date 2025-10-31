@@ -52,6 +52,8 @@ void chip8::emulate_cycle() {
 	
 	opcode = RAM[pc] << 8 | RAM[pc+1];
 	
+	std::cout << std::dec << pc << " " << std::showbase << std::hex << opcode << std::endl;
+
 	switch(opcode & 0xF000) {
 		
 		case 0x0000:
