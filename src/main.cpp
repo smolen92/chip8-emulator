@@ -39,7 +39,6 @@ int main(int argc, char **argv) {
 	bool running = true;
 
 	while(running) {
-		
 
 		SDL_Event input;
 		while(SDL_PollEvent(&input)) {

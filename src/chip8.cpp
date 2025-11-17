@@ -14,7 +14,7 @@ void chip8::initilalize() {
 
 	std::memset(keypad, 0, 16);
 
-	draw_flag = false;
+	draw_flag = true;
 
 	srand(time(0));
 }
@@ -52,7 +52,7 @@ void chip8::emulate_cycle() {
 	
 	opcode = RAM[pc] << 8 | RAM[pc+1];
 	
-	std::cout << std::dec << pc << " " << std::showbase << std::hex << opcode << std::endl;
+	//std::cout << std::dec << pc << " " << std::showbase << std::hex << opcode << std::endl;
 
 	switch(opcode & 0xF000) {
 		
@@ -195,7 +195,6 @@ void chip8::emulate_cycle() {
 					
 					uint8_t pixel_row = RAM[I+i];
 
-
 					for(int j=0; j < sprite_width; j++) {
 						if( (screen[x_pos+j + ((y_pos+i)*64) ] == 1) && ( (pixel_row & (0x80 >> j)) == 0) ) v[0xF] = 1; 
 
@@ -306,14 +305,20 @@ void chip8::render(SDL_Renderer* renderer) {
 	temp.y = 10;
 
 	for(int i=0; i < SCREEN_SIZE; i++) {
-		temp.x = (float)((int)i%64);
-		temp.y = (float)((int)i/64);
+		temp.x = (float)((int)i%64)*10;
+		temp.y = (float)((int)i/64)*10;
+	
+		(screen[i] == 1) ? SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF) : SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 
 		SDL_RenderFillRect(renderer, &temp);
-
+		
+		//if(i%64 == 0) std::cout << "\n";
+		//std::cout << screen[i] << " ";
 	}
+
+	//std::cout << "\n";
 
 	SDL_RenderPresent(renderer);
 	
-	draw_flag = false;
+	//draw_flag = false;
 }
