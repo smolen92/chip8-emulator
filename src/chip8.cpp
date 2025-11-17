@@ -140,7 +140,7 @@ void chip8::emulate_cycle() {
 					break;
 
 				case 0x0006:
-					v[0xF] = v[(opcode & 0x0F00) >> 8] & 0x8;
+					v[0xF] = v[(opcode & 0x0F00) >> 8] & 0x1;
 					v[(opcode & 0x0F00) >> 8] >>= 1;
 					NEXT_INSTRUCTION(pc);
 					break;
@@ -152,7 +152,7 @@ void chip8::emulate_cycle() {
 					break;
 
 				case 0x00E:
-					v[0xF] = v[(opcode & 0x0F00) >> 8] & 0x1;
+					v[0xF] = v[(opcode & 0x0F00) >> 8] & 0x7;
 					v[(opcode & 0x0F00) >> 8] <<= 1;
 					NEXT_INSTRUCTION(pc);
 					break;
@@ -181,7 +181,7 @@ void chip8::emulate_cycle() {
 			NEXT_INSTRUCTION(pc);
 			break;
 
-		case 0xD000:
+		case 0xD000: //check
 			{
 				draw_flag = true;
 				uint8_t x_pos = (opcode & 0x0F00) >> 8;
@@ -209,12 +209,12 @@ void chip8::emulate_cycle() {
 
 		case 0xE000:
 			switch(opcode & 0x00FF) {
-				case 0x009E:
+				case 0x009E: //check
 					for(int i=0; i < 16; i++) {
 						( keypad[i] == (v[(opcode & 0x0F00) >> 8] & 0x000F)) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
 					}
 					break;
-				case 0x00A1:
+				case 0x00A1: //check
 					for(int i=0; i < 16; i++) {
 						( keypad[i] != (v[(opcode & 0x0F00) >> 8] & 0x000F)) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
 					}
@@ -246,7 +246,7 @@ void chip8::emulate_cycle() {
 					sound_timer = v[(opcode & 0x0F00) >> 8];
 					NEXT_INSTRUCTION(pc);
 					break;
-				case 0x001E:
+				case 0x001E: //check
 					I += v[(opcode & 0x0F00) >> 8];
 					NEXT_INSTRUCTION(pc);
 					break;
@@ -260,13 +260,13 @@ void chip8::emulate_cycle() {
 					RAM[I+2] = (v[(opcode & 0xF00) >> 8] % 100)%10;
 					NEXT_INSTRUCTION(pc);
 					break;
-				case 0x0055:
+				case 0x0055: //check
 					for(int v_index=0; v_index < REGISTER_COUNT; v_index++) {
 						RAM[I+v_index] = v[v_index];
 					}
 					NEXT_INSTRUCTION(pc);
 					break;
-				case 0x0065:
+				case 0x0065: //check
 					for(int v_index=0; v_index < REGISTER_COUNT; v_index++) {
 						v[v_index] = RAM[I+v_index];  
 					}
