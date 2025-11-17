@@ -246,7 +246,7 @@ void chip8::emulate_cycle() {
 					sound_timer = v[(opcode & 0x0F00) >> 8];
 					NEXT_INSTRUCTION(pc);
 					break;
-				case 0x001E: //check
+				case 0x001E: 
 					I += v[(opcode & 0x0F00) >> 8];
 					NEXT_INSTRUCTION(pc);
 					break;
@@ -260,14 +260,14 @@ void chip8::emulate_cycle() {
 					RAM[I+2] = (v[(opcode & 0xF00) >> 8] % 100)%10;
 					NEXT_INSTRUCTION(pc);
 					break;
-				case 0x0055: //check
-					for(int v_index=0; v_index < REGISTER_COUNT; v_index++) {
+				case 0x0055: 
+					for(int v_index=0; v_index <= ( (opcode & 0x0F00) >> 8); v_index++) {
 						RAM[I+v_index] = v[v_index];
 					}
 					NEXT_INSTRUCTION(pc);
 					break;
-				case 0x0065: //check
-					for(int v_index=0; v_index < REGISTER_COUNT; v_index++) {
+				case 0x0065: 
+					for(int v_index=0; v_index <= ( (opcode & 0x0F00) >> 8); v_index++) {
 						v[v_index] = RAM[I+v_index];  
 					}
 					NEXT_INSTRUCTION(pc);
