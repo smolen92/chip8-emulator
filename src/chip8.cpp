@@ -12,13 +12,9 @@ void chip8::initilalize() {
 	
 	std::memset(screen, 0, SCREEN_SIZE);
 
-	std::memset(keypad, 0, 16);
+	std::memset(keypad, 0, 16*sizeof(uint8_t));
 
 	draw_flag = true;
-
-	for(uint8_t i=0; i < 16; i++) {
-		keypad[i] = 0;
-	}
 
 	srand(time(0));
 }
