@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 	chip8 Chip;
 
 	Chip.initilalize();
-	Chip.load_game(argv[1]);
+	if( !Chip.load_game(argv[1]) ) return 1;
 
 	bool running = true;
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
 		}
 
-		Chip.emulate_cycle2();
+		Chip.emulate_cycle();
 
 		Chip.render(renderer);
 	}

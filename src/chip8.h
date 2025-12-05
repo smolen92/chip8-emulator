@@ -27,7 +27,7 @@ class chip8 {
 		
 		void emulate_cycle2();
 
-		unsigned char keypad[16];
+		uint8_t keypad[16];
 
 		void render(SDL_Renderer* renderer);
 	private:

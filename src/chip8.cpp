@@ -16,6 +16,10 @@ void chip8::initilalize() {
 
 	draw_flag = true;
 
+	for(uint8_t i=0; i < 16; i++) {
+		keypad[i] = 0;
+	}
+
 	srand(time(0));
 }
 
@@ -209,15 +213,11 @@ void chip8::emulate_cycle() {
 
 		case 0xE000:
 			switch(opcode & 0x00FF) {
-				case 0x009E: //check
-					for(int i=0; i < 16; i++) {
-						( keypad[i] == (v[(opcode & 0x0F00) >> 8] & 0x000F)) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
-					}
+				case 0x009E: 
+					(keypad[v[(opcode & 0x0F00)]] == 1 ) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
 					break;
-				case 0x00A1: //check
-					for(int i=0; i < 16; i++) {
-						( keypad[i] != (v[(opcode & 0x0F00) >> 8] & 0x000F)) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
-					}
+				case 0x00A1: 
+					(keypad[v[(opcode & 0x0F00)]] == 0 ) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
 					break;
 				default:
 					std::cout << "Unknown opcode [0xE000] " << std::showbase << std::hex << opcode << "\n";
