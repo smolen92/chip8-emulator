@@ -2,7 +2,6 @@
 
 #include "chip8.h"
 
-
 #define WINDOW_WIDHT 640
 #define WINDOW_HEIHGT 320
 
@@ -14,7 +13,10 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	
-	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS);
+	if( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS) == false) {
+		std::cout << "Error: " << SDL_GetError() << "\n";
+		return 1;
+	}
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
@@ -29,6 +31,10 @@ int main(int argc, char **argv) {
 	if(renderer == NULL) {
 		std::cout << "Error: " << SDL_GetError() << "\n";
 		return 1;
+	}
+
+	if( !SDL_SetRenderVSync(renderer, 1) ) {
+		std::cout << "Unable to turn Vsync on\n";
 	}
 
 	chip8 Chip;
@@ -48,7 +54,7 @@ int main(int argc, char **argv) {
 
 		}
 
-		Chip.emulate_cycle();
+		Chip.emulate_cycle2();
 
 		Chip.render(renderer);
 	}

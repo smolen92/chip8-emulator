@@ -24,6 +24,8 @@ class chip8 {
 		bool load_game(const char* name);
 
 		void emulate_cycle();
+		
+		void emulate_cycle2();
 
 		unsigned char keypad[16];
 
