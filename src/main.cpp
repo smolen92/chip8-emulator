@@ -57,16 +57,16 @@ int main(int argc, char **argv) {
 
 		const bool *key_state = SDL_GetKeyboardState(nullptr);
 
-		Chip.keypad[0] = key_state[SDL_SCANCODE_1];
-		Chip.keypad[1] = key_state[SDL_SCANCODE_2];
-		Chip.keypad[2] = key_state[SDL_SCANCODE_3];
-		Chip.keypad[3] = key_state[SDL_SCANCODE_Q];
-		Chip.keypad[4] = key_state[SDL_SCANCODE_W];
-		Chip.keypad[5] = key_state[SDL_SCANCODE_E];
-		Chip.keypad[6] = key_state[SDL_SCANCODE_A];
-		Chip.keypad[7] = key_state[SDL_SCANCODE_S];
-		Chip.keypad[8] = key_state[SDL_SCANCODE_D];
-		Chip.keypad[9] = key_state[SDL_SCANCODE_X];
+		Chip.keypad[0] = key_state[SDL_SCANCODE_X];
+		Chip.keypad[1] = key_state[SDL_SCANCODE_1];
+		Chip.keypad[2] = key_state[SDL_SCANCODE_2];
+		Chip.keypad[3] = key_state[SDL_SCANCODE_3];
+		Chip.keypad[4] = key_state[SDL_SCANCODE_Q];
+		Chip.keypad[5] = key_state[SDL_SCANCODE_W];
+		Chip.keypad[6] = key_state[SDL_SCANCODE_E];
+		Chip.keypad[7] = key_state[SDL_SCANCODE_A];
+		Chip.keypad[8] = key_state[SDL_SCANCODE_S];
+		Chip.keypad[9] = key_state[SDL_SCANCODE_D];
 		Chip.keypad[10] = key_state[SDL_SCANCODE_Z];
 		Chip.keypad[11] = key_state[SDL_SCANCODE_C];
 		Chip.keypad[12] = key_state[SDL_SCANCODE_4];

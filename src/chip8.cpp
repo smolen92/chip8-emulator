@@ -49,7 +49,7 @@ bool chip8::load_game(const char* name) {
 }
 
 void chip8::emulate_cycle() {
-	
+
 	opcode = RAM[pc] << 8 | RAM[pc+1];
 	
 	//std::cout << std::dec << pc << " " << std::showbase << std::hex << opcode << std::endl;
@@ -231,10 +231,10 @@ void chip8::emulate_cycle() {
 		case 0xE000:
 			switch(opcode & 0x00FF) {
 				case 0x009E: 
-					(keypad[v[(opcode & 0x0F00)]] == 1 ) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
+					(keypad[v[(opcode & 0x0F00) >> 8]] == 1 ) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
 					break;
 				case 0x00A1: 
-					(keypad[v[(opcode & 0x0F00)]] == 0 ) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
+					(keypad[v[(opcode & 0x0F00) >> 8]] == 0 ) ? SKIP_INSTRUCTION(pc) : NEXT_INSTRUCTION(pc);
 					break;
 				default:
 					std::cout << "Unknown opcode [0xE000] " << std::showbase << std::hex << opcode << "\n";
@@ -248,9 +248,17 @@ void chip8::emulate_cycle() {
 					NEXT_INSTRUCTION(pc);
 					break;
 				case 0x000A:
-					for(int i=0; i < 16; i++) {
-						if(keypad[i] == 1) {
-							v[(opcode & 0x0F00) >> 8] = i;
+					{
+						bool key_pressed = false;
+
+						for(int i=0; i < 16; i++) {
+							if(keypad[i] == 1) {
+								v[(opcode & 0x0F00) >> 8] = i;
+								key_pressed = true;
+							}
+						}
+
+						if(key_pressed) {
 							NEXT_INSTRUCTION(pc);
 						}
 					}
