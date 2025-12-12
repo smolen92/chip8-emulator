@@ -111,7 +111,7 @@ void chip8::emulate_cycle() {
 					v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x00F0) >> 4];
 					NEXT_INSTRUCTION(pc);
 					break;
-
+				//instructions 8xy1, 8xy2, 8xy3 don't reset v[0xF]
 				case 0x0001:
 					v[(opcode & 0x0F00) >> 8] |= v[(opcode & 0x00F0) >> 4];
 					NEXT_INSTRUCTION(pc);
@@ -196,7 +196,7 @@ void chip8::emulate_cycle() {
 			v[(opcode & 0x0F00) >> 8] = (rand()%255) & (opcode & 0x00FF);
 			NEXT_INSTRUCTION(pc);
 			break;
-
+		//sprites don't wrap around screen
 		case 0xD000: 
 			{
 				draw_flag = true;
@@ -249,16 +249,19 @@ void chip8::emulate_cycle() {
 					break;
 				case 0x000A:
 					{
-						bool key_pressed = false;
+						static bool key_pressed = false;
+						uint8_t key_index;
 
-						for(int i=0; i < 16; i++) {
+						for(uint8_t i=0; i < 16; i++) {
 							if(keypad[i] == 1) {
 								v[(opcode & 0x0F00) >> 8] = i;
+								key_index = i;
 								key_pressed = true;
 							}
 						}
 
-						if(key_pressed) {
+						if(key_pressed && (keypad[key_index] == 0) ) {
+							key_pressed = false;
 							NEXT_INSTRUCTION(pc);
 						}
 					}
@@ -285,6 +288,7 @@ void chip8::emulate_cycle() {
 					RAM[I+2] = (v[(opcode & 0xF00) >> 8] % 100)%10;
 					NEXT_INSTRUCTION(pc);
 					break;
+				//instruction FX55 and FX65 don't increment I
 				case 0x0055: 
 					for(int v_index=0; v_index <= ( (opcode & 0x0F00) >> 8); v_index++) {
 						RAM[I+v_index] = v[v_index];
@@ -309,10 +313,8 @@ void chip8::emulate_cycle() {
 	if(delay_timer > 0) delay_timer--;
 
 	if(sound_timer > 0) {
-		if(sound_timer == 1) {
-			std::cout << "BEEP\n";
-			sound_timer--;
-		}
+		if(sound_timer == 1) std::cout << "BEEP\n";
+		sound_timer--;
 	}
 
 }
