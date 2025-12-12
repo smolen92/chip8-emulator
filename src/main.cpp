@@ -52,45 +52,27 @@ int main(int argc, char **argv) {
 			if(input.type == SDL_EVENT_QUIT) {
 				running = false;
 			}
-			
-			if(input.key.type == SDL_EVENT_KEY_DOWN) {
-				if (input.key.scancode == SDL_SCANCODE_1) Chip.keypad[0] = 1;
-				if (input.key.scancode == SDL_SCANCODE_2) Chip.keypad[1] = 1;
-				if (input.key.scancode == SDL_SCANCODE_3) Chip.keypad[2] = 1;
-				if (input.key.scancode == SDL_SCANCODE_Q) Chip.keypad[3] = 1; 
-				if (input.key.scancode == SDL_SCANCODE_W) Chip.keypad[4] = 1;
-				if (input.key.scancode == SDL_SCANCODE_E) Chip.keypad[5] = 1;
-				if (input.key.scancode == SDL_SCANCODE_A) Chip.keypad[6] = 1;
-				if (input.key.scancode == SDL_SCANCODE_S) Chip.keypad[7] = 1;
-				if (input.key.scancode == SDL_SCANCODE_D) Chip.keypad[8] = 1;
-				if (input.key.scancode == SDL_SCANCODE_X) Chip.keypad[9] = 1;
-				if (input.key.scancode == SDL_SCANCODE_Z) Chip.keypad[10] = 1; 
-				if (input.key.scancode == SDL_SCANCODE_C) Chip.keypad[11] = 1;
-				if (input.key.scancode == SDL_SCANCODE_4) Chip.keypad[12] = 1; 
-				if (input.key.scancode == SDL_SCANCODE_R) Chip.keypad[13] = 1;
-				if (input.key.scancode == SDL_SCANCODE_F) Chip.keypad[14] = 1;
-				if (input.key.scancode == SDL_SCANCODE_V) Chip.keypad[15] = 1;
-			}
-
-			if(input.key.type == SDL_EVENT_KEY_UP) {
-				if (input.key.scancode == SDL_SCANCODE_1) Chip.keypad[0] = 0;
-				if (input.key.scancode == SDL_SCANCODE_2) Chip.keypad[1] = 0;
-				if (input.key.scancode == SDL_SCANCODE_3) Chip.keypad[2] = 0;
-				if (input.key.scancode == SDL_SCANCODE_Q) Chip.keypad[3] = 0; 
-				if (input.key.scancode == SDL_SCANCODE_W) Chip.keypad[4] = 0;
-				if (input.key.scancode == SDL_SCANCODE_E) Chip.keypad[5] = 0;
-				if (input.key.scancode == SDL_SCANCODE_A) Chip.keypad[6] = 0;
-				if (input.key.scancode == SDL_SCANCODE_S) Chip.keypad[7] = 0;
-				if (input.key.scancode == SDL_SCANCODE_D) Chip.keypad[8] = 0;
-				if (input.key.scancode == SDL_SCANCODE_X) Chip.keypad[9] = 0;
-				if (input.key.scancode == SDL_SCANCODE_Z) Chip.keypad[10] = 0; 
-				if (input.key.scancode == SDL_SCANCODE_C) Chip.keypad[11] = 0;
-				if (input.key.scancode == SDL_SCANCODE_4) Chip.keypad[12] = 0; 
-				if (input.key.scancode == SDL_SCANCODE_R) Chip.keypad[13] = 0;
-				if (input.key.scancode == SDL_SCANCODE_F) Chip.keypad[14] = 0;
-				if (input.key.scancode == SDL_SCANCODE_V) Chip.keypad[15] = 0;
-			}
+		
 		}
+
+		const bool *key_state = SDL_GetKeyboardState(nullptr);
+
+		Chip.keypad[0] = key_state[SDL_SCANCODE_1];
+		Chip.keypad[1] = key_state[SDL_SCANCODE_2];
+		Chip.keypad[2] = key_state[SDL_SCANCODE_3];
+		Chip.keypad[3] = key_state[SDL_SCANCODE_Q];
+		Chip.keypad[4] = key_state[SDL_SCANCODE_W];
+		Chip.keypad[5] = key_state[SDL_SCANCODE_E];
+		Chip.keypad[6] = key_state[SDL_SCANCODE_A];
+		Chip.keypad[7] = key_state[SDL_SCANCODE_S];
+		Chip.keypad[8] = key_state[SDL_SCANCODE_D];
+		Chip.keypad[9] = key_state[SDL_SCANCODE_X];
+		Chip.keypad[10] = key_state[SDL_SCANCODE_Z];
+		Chip.keypad[11] = key_state[SDL_SCANCODE_C];
+		Chip.keypad[12] = key_state[SDL_SCANCODE_4];
+		Chip.keypad[13] = key_state[SDL_SCANCODE_R];
+		Chip.keypad[14] = key_state[SDL_SCANCODE_F];
+		Chip.keypad[15] = key_state[SDL_SCANCODE_V];
 
 		Chip.emulate_cycle();
 
