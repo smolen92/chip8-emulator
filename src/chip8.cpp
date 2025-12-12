@@ -128,33 +128,49 @@ void chip8::emulate_cycle() {
 					break;
 				
 				case 0x0004:
-					( v[(opcode & 0x00F0) >> 4] > (0xFF - v[(opcode & 0x0F00) >> 8]) ) ? v[0xF] = 1 : v[0xF] = 0;
-					v[(opcode & 0x0F00) >> 8] += v[(opcode & 0x00F0) >> 4];
-					NEXT_INSTRUCTION(pc);
-					break;
+					{
+						uint8_t vx_original_value = v[(opcode & 0x0F00) >> 8];
+						v[(opcode & 0x0F00) >> 8] += v[(opcode & 0x00F0) >> 4];
+						( v[(opcode & 0x00F0) >> 4] > (0xFF - vx_original_value) ) ? v[0xF] = 1 : v[0xF] = 0;
+						NEXT_INSTRUCTION(pc);
+						break;
+					}
 
 				case 0x0005:
-					( v[(opcode & 0x0F00) >> 8] >= v[(opcode & 0x00F0) >> 4] ) ? v[0xF] = 1 : v[0xF] = 0;
-					v[(opcode & 0x0F00) >> 8] -= v[(opcode & 0x00F0) >> 4];
+					{
+						uint8_t vx_original_value = v[(opcode & 0x0F00) >> 8];
+						v[(opcode & 0x0F00) >> 8] -= v[(opcode & 0x00F0) >> 4];
+						( vx_original_value >= v[(opcode & 0x00F0) >> 4] ) ? v[0xF] = 1 : v[0xF] = 0;
+
+					}
 					NEXT_INSTRUCTION(pc);
 					break;
 
 				case 0x0006:
-					v[0xF] = v[(opcode & 0x0F00) >> 8] & 0x1;
-					v[(opcode & 0x0F00) >> 8] >>= 1;
-					NEXT_INSTRUCTION(pc);
+					{
+						uint8_t vx_original_value = v[(opcode & 0x0F00) >> 8]; 
+						v[(opcode & 0x0F00) >> 8] >>= 1;
+						v[0xF] = vx_original_value & 0x1;
+						NEXT_INSTRUCTION(pc);
+					}
 					break;
 
 				case 0x0007:
-					( v[(opcode & 0x00F0) >> 4] >= v[(opcode & 0x0F00) >> 8] ) ? v[0xF] = 1 : v[0xF] = 0;
-					v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x00F0) >> 4] - v[(opcode & 0x0F00) >> 8];
-					NEXT_INSTRUCTION(pc);
-					break;
+					{	
+						uint8_t vx_original_value = v[(opcode & 0x0F00) >> 8];
+						v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x00F0) >> 4] - v[(opcode & 0x0F00) >> 8];
+						( v[(opcode & 0x00F0) >> 4] >= vx_original_value ) ? v[0xF] = 1 : v[0xF] = 0;
+						NEXT_INSTRUCTION(pc);
+						break;
+					}
 
-				case 0x00E:
-					v[0xF] = v[(opcode & 0x0F00) >> 8] & 0x7;
-					v[(opcode & 0x0F00) >> 8] <<= 1;
-					NEXT_INSTRUCTION(pc);
+				case 0x000E:
+					{
+						uint8_t vx_original_value = v[(opcode & 0x0F00) >> 8];
+						v[(opcode & 0x0F00) >> 8] <<= 1;
+						v[0xF] = vx_original_value >> 7;
+						NEXT_INSTRUCTION(pc);
+					}
 					break;
 
 				default:
