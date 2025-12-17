@@ -13,9 +13,19 @@
 
 #define REGISTER_COUNT 16
 #define RAM_SIZE 4096
-#define SCREEN_SIZE 64*32
+#define SCREEN_WIDTH 64
+#define SCREEN_HEIGHT 32
 #define STACK_SIZE 16
 #define PROGRAM_LOCATION 0x200
+
+struct quirks {
+	bool vf_reset;
+	bool memory;
+	bool display_wait;
+	bool clipping;
+	bool shifting;
+	bool jumping;
+};
 
 class chip8 {
 	public:
@@ -36,7 +46,7 @@ class chip8 {
 		uint8_t v[REGISTER_COUNT]; //16x 8-bit register
 		uint16_t I, pc; //Index register, program counter
 
-		uint8_t screen[SCREEN_SIZE];
+		uint8_t screen[SCREEN_WIDTH][SCREEN_HEIGHT];
 
 		uint8_t delay_timer, sound_timer;
 
@@ -61,6 +71,8 @@ class chip8 {
 		  0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 		  0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 		};
+
+		quirks settings;
 
 		bool draw_flag;
 };

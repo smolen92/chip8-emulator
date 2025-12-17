@@ -10,13 +10,15 @@ void chip8::initilalize() {
 		RAM[i] = chip8_fontset[i];
 	}
 	
-	std::memset(screen, 0, SCREEN_SIZE);
+	std::memset(screen, 0, SCREEN_WIDTH*SCREEN_HEIGHT);
 
 	std::memset(keypad, 0, 16*sizeof(uint8_t));
 
 	draw_flag = true;
 
 	srand(time(0));
+
+	settings.vf_reset = true;
 }
 
 bool chip8::load_game(const char* name) {
@@ -52,14 +54,12 @@ void chip8::emulate_cycle() {
 
 	opcode = RAM[pc] << 8 | RAM[pc+1];
 	
-	//std::cout << std::dec << pc << " " << std::showbase << std::hex << opcode << std::endl;
-
 	switch(opcode & 0xF000) {
 		
 		case 0x0000:
 			switch(opcode & 0x000F) {
 				case 0x0000:
-					std::memset(screen, 0, SCREEN_SIZE);
+					std::memset(screen, 0, SCREEN_WIDTH*SCREEN_HEIGHT);
 					NEXT_INSTRUCTION(pc);
 					break;
 				
@@ -111,19 +111,21 @@ void chip8::emulate_cycle() {
 					v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x00F0) >> 4];
 					NEXT_INSTRUCTION(pc);
 					break;
-				//instructions 8xy1, 8xy2, 8xy3 don't reset v[0xF]
 				case 0x0001:
 					v[(opcode & 0x0F00) >> 8] |= v[(opcode & 0x00F0) >> 4];
+					if(settings.vf_reset) v[0xF] = 0;
 					NEXT_INSTRUCTION(pc);
 					break;
 
 				case 0x0002:
 					v[(opcode & 0x0F00) >> 8] &= v[(opcode & 0x00F0) >> 4];
+					if(settings.vf_reset) v[0xF] = 0;
 					NEXT_INSTRUCTION(pc);
 					break;
 
 				case 0x0003:
 					v[(opcode & 0x0F00) >> 8] ^= v[(opcode & 0x00F0) >> 4];
+					if(settings.vf_reset) v[0xF] = 0;
 					NEXT_INSTRUCTION(pc);
 					break;
 				
@@ -215,9 +217,9 @@ void chip8::emulate_cycle() {
 					
 						if( (pixel_row & (0x80 >> j)) != 0 ) {
 
-							if( screen[x_pos+j + ((y_pos+i)*64)] == 1 ) v[0xF] = 1;
+							if( screen[(x_pos+j)%SCREEN_WIDTH][(y_pos+i)%SCREEN_HEIGHT] == 1 ) v[0xF] = 1;
 							
-							screen[x_pos+j + ((y_pos+i)*64)] ^= 1;
+							screen[(x_pos+j)%SCREEN_WIDTH][(y_pos+i)%SCREEN_HEIGHT] ^= 1;
 						}
 
 					}
@@ -331,19 +333,17 @@ void chip8::render(SDL_Renderer* renderer) {
 	temp.h = 10; //WINDOW_WIDTH/SCREEN_WIDTH
 	temp.w = 10;
 
-	for(int i=0; i < SCREEN_SIZE; i++) {
-		temp.x = (float)((int)i%64)*10;
-		temp.y = (float)((int)i/64)*10;
+	for(int i=0; i < SCREEN_WIDTH; i++) {
+		for(int j=0; j < SCREEN_HEIGHT; j++) {
+			temp.x = i*10;
+			temp.y = j*10;
 	
-		(screen[i] == 1) ? SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF) : SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+			(screen[i][j] == 1) ? SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF) : SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 		
-		SDL_RenderFillRect(renderer, &temp);
+			SDL_RenderFillRect(renderer, &temp);
+		}
 		
-		//if(i%64 == 0) std::cout << "\n";
-		//(screen[i] == 1) ? std::cout << "1" : std::cout << "0";
 	}
-
-	//std::cout << "\n";
 
 	SDL_RenderPresent(renderer);
 	
