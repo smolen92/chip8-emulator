@@ -21,6 +21,7 @@ void chip8::initilalize() {
 	settings.vf_reset = true;
 	settings.memory = true;
 	settings.shifting = true;
+	settings.clipping = true;
 }
 
 bool chip8::load_game(const char* name) {
@@ -203,12 +204,11 @@ void chip8::emulate_cycle() {
 			v[(opcode & 0x0F00) >> 8] = (rand()%255) & (opcode & 0x00FF);
 			NEXT_INSTRUCTION(pc);
 			break;
-		//sprites don't wrap around screen
 		case 0xD000: 
 			{
 				draw_flag = true;
-				uint8_t x_pos = v[(opcode & 0x0F00) >> 8];
-				uint8_t y_pos = v[(opcode & 0x00F0) >> 4];
+				uint8_t x_pos = v[(opcode & 0x0F00) >> 8]%SCREEN_WIDTH;
+				uint8_t y_pos = v[(opcode & 0x00F0) >> 4]%SCREEN_HEIGHT;
 				uint8_t sprite_height = opcode & 0x000F;
 				uint8_t sprite_width = 8;
 
@@ -221,6 +221,8 @@ void chip8::emulate_cycle() {
 					for(int j=0; j < sprite_width; j++) {
 					
 						if( (pixel_row & (0x80 >> j)) != 0 ) {
+							
+							if( settings.clipping && ( ( x_pos+j >= SCREEN_WIDTH ) || ( y_pos+i >= SCREEN_HEIGHT ) ) ) continue;
 
 							if( screen[(x_pos+j)%SCREEN_WIDTH][(y_pos+i)%SCREEN_HEIGHT] == 1 ) v[0xF] = 1;
 							
