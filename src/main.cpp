@@ -43,8 +43,12 @@ int main(int argc, char **argv) {
 	if( !Chip.load_game(argv[1]) ) return 1;
 
 	bool running = true;
+	
+	uint64_t current_time = 0, old_time;
 
 	while(running) {
+
+		//old_time = current_time;
 
 		SDL_Event input;
 		while(SDL_PollEvent(&input)) {
@@ -77,6 +81,9 @@ int main(int argc, char **argv) {
 		Chip.emulate_cycle();
 
 		Chip.render(renderer);
+
+		//current_time = SDL_GetTicks();
+		//std::cout << "Frame time: " << current_time-old_time << "\n";
 	
 	}
 

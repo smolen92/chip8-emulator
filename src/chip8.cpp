@@ -19,6 +19,8 @@ void chip8::initilalize() {
 	srand(time(0));
 
 	settings.vf_reset = true;
+	settings.memory = true;
+	settings.shifting = true;
 }
 
 bool chip8::load_game(const char* name) {
@@ -60,6 +62,7 @@ void chip8::emulate_cycle() {
 			switch(opcode & 0x000F) {
 				case 0x0000:
 					std::memset(screen, 0, SCREEN_WIDTH*SCREEN_HEIGHT);
+					draw_flag = true;
 					NEXT_INSTRUCTION(pc);
 					break;
 				
@@ -151,6 +154,7 @@ void chip8::emulate_cycle() {
 				case 0x0006:
 					{
 						uint8_t vx_original_value = v[(opcode & 0x0F00) >> 8]; 
+						if( settings.shifting ) v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x00F0) >> 4]; 
 						v[(opcode & 0x0F00) >> 8] >>= 1;
 						v[0xF] = vx_original_value & 0x1;
 						NEXT_INSTRUCTION(pc);
@@ -169,6 +173,7 @@ void chip8::emulate_cycle() {
 				case 0x000E:
 					{
 						uint8_t vx_original_value = v[(opcode & 0x0F00) >> 8];
+						if( settings.shifting ) v[(opcode & 0x0F00) >> 8] = v[(opcode & 0x00F0) >> 4]; 
 						v[(opcode & 0x0F00) >> 8] <<= 1;
 						v[0xF] = vx_original_value >> 7;
 						NEXT_INSTRUCTION(pc);
@@ -290,16 +295,19 @@ void chip8::emulate_cycle() {
 					RAM[I+2] = (v[(opcode & 0xF00) >> 8] % 100)%10;
 					NEXT_INSTRUCTION(pc);
 					break;
-				//instruction FX55 and FX65 don't increment I
 				case 0x0055: 
 					for(int v_index=0; v_index <= ( (opcode & 0x0F00) >> 8); v_index++) {
-						RAM[I+v_index] = v[v_index];
+						uint16_t RAM_index;
+						(settings.memory) ? RAM_index = I++ : RAM_index = I+v_index;
+						RAM[RAM_index] = v[v_index];
 					}
 					NEXT_INSTRUCTION(pc);
 					break;
 				case 0x0065: 
 					for(int v_index=0; v_index <= ( (opcode & 0x0F00) >> 8); v_index++) {
-						v[v_index] = RAM[I+v_index];  
+						uint16_t RAM_index;
+						(settings.memory) ? RAM_index = I++ : RAM_index = I+v_index;
+						v[v_index] = RAM[RAM_index];  
 					}
 					NEXT_INSTRUCTION(pc);
 					break;
