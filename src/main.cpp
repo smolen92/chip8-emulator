@@ -44,11 +44,7 @@ int main(int argc, char **argv) {
 
 	bool running = true;
 	
-	uint64_t current_time = 0, old_time;
-
 	while(running) {
-
-		//old_time = current_time;
 
 		SDL_Event input;
 		while(SDL_PollEvent(&input)) {
@@ -79,12 +75,10 @@ int main(int argc, char **argv) {
 		Chip.keypad[15] = key_state[SDL_SCANCODE_V];
 
 		Chip.emulate_cycle();
+		Chip.emulate_timer();
 
 		Chip.render(renderer);
 
-		//current_time = SDL_GetTicks();
-		//std::cout << "Frame time: " << current_time-old_time << "\n";
-	
 	}
 
 	SDL_DestroyRenderer(renderer);

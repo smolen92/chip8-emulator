@@ -35,7 +35,7 @@ class chip8 {
 
 		void emulate_cycle();
 		
-		void emulate_cycle2();
+		void emulate_timer();
 
 		uint8_t keypad[16];
 
@@ -74,7 +74,11 @@ class chip8 {
 
 		quirks settings;
 
-		bool draw_flag;
+		bool draw_flag, vsync;
+
+		uint64_t instruction_counter;
+
+		uint64_t instruction_per_frame;
 };
 
 #endif

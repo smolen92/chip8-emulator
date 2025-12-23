@@ -15,6 +15,7 @@ void chip8::initilalize() {
 	std::memset(keypad, 0, 16*sizeof(uint8_t));
 
 	draw_flag = true;
+	vsync = false;
 
 	srand(time(0));
 
@@ -22,6 +23,9 @@ void chip8::initilalize() {
 	settings.memory = true;
 	settings.shifting = true;
 	settings.clipping = true;
+
+	instruction_counter = 0;
+	instruction_per_frame = 8;
 }
 
 bool chip8::load_game(const char* name) {
@@ -322,6 +326,15 @@ void chip8::emulate_cycle() {
 			std::cout << "Unknown opcode: " << std::showbase << std::hex << opcode << "\n";
 	}
 
+	instruction_counter++;
+
+}
+
+void chip8::emulate_timer() {
+	if(instruction_counter < instruction_per_frame) return;	
+	
+	instruction_counter = 0;
+
 	if(delay_timer > 0) delay_timer--;
 
 	if(sound_timer > 0) {
@@ -329,11 +342,12 @@ void chip8::emulate_cycle() {
 		sound_timer--;
 	}
 
+	vsync = true;
 }
 
 void chip8::render(SDL_Renderer* renderer) {
-	if( !draw_flag) return;
-	
+	if(!vsync || !draw_flag) return;
+
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -357,5 +371,6 @@ void chip8::render(SDL_Renderer* renderer) {
 
 	SDL_RenderPresent(renderer);
 	
+	vsync = false;
 	draw_flag = false;
 }
